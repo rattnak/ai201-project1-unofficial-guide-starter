@@ -9,27 +9,31 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+**Off-campus housing experiences near Boston-area universities** (BU, Northeastern, MIT, Harvard, BC, Tufts, Emerson).
+
+University housing offices publish official policies and lottery rules, but they never tell you which landlords ghost maintenance requests, which buildings have roach problems, or which neighborhoods flood after rain. Students share that knowledge informally, in Reddit threads, Facebook groups, and Google/Yelp reviews, but it's scattered across dozens of sources and hard to search. This RAG system makes that collective knowledge queryable so an incoming student can ask "Is [neighborhood] safe to walk at night?" or "Which management companies have the worst reputation near Northeastern?" and get a grounded, cited answer.
 
 ---
 
 ## Documents
 
-<!-- List your specific sources: URLs, subreddit names, forum threads, or file descriptions.
-     Aim for at least 10 sources that together cover different subtopics or perspectives within your domain. -->
+<!-- Sources collected for the Boston-area off-campus housing domain.
+     Mix of Reddit threads, review aggregators, and student-written guides. -->
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 | r/NEU (Northeastern) | Thread: "off campus housing advice / recommendations" — students share neighborhood picks, landlord warnings, and lease tips | https://www.reddit.com/r/NEU/search/?q=off+campus+housing |
+| 2 | r/BostonU | Thread: "Where do BU students live off campus?" — South End, Allston, Brighton recs and warnings | https://www.reddit.com/r/BostonU/search/?q=off+campus+housing |
+| 3 | r/mit | Thread: "Off-campus housing recommendations in Cambridge/Somerville" | https://www.reddit.com/r/mit/search/?q=off+campus+housing |
+| 4 | r/Harvard | Thread: "Best neighborhoods for grad students renting off campus" | https://www.reddit.com/r/harvard/search/?q=off+campus+housing |
+| 5 | r/Boston | Thread: "Moving to Boston for college — which neighborhoods to avoid?" — safety, commute, rent discussions | https://www.reddit.com/r/boston/search/?q=college+student+apartment |
+| 6 | Google Reviews — Allston landlords | 1-star and 5-star tenant reviews of major property management companies (RIOS, Charlesgate, etc.) near BU/BC | Collected manually from Google Maps searches for "apartment" in Allston 02134 |
+| 7 | Yelp — Cambridge/Somerville apartments | Student tenant reviews of complexes near MIT/Harvard (e.g. Windsor, University Park area) | Collected manually from Yelp search "apartments Cambridge MA" |
+| 8 | r/NEU wiki / pinned post | Pinned "Housing Megathread" with neighborhood breakdowns, average rents, and lease red flags | https://www.reddit.com/r/NEU/wiki/housing (or top pinned post) |
+| 9 | Northeastern Off-Campus Housing student blog post | Unofficial student-written guide on Apartments.com or similar listing sites' forums | Search: "Northeastern off campus housing guide site:apartments.com OR site:apartmentlist.com" |
+| 10 | r/Tufts | Thread: "Best off-campus housing near Tufts — Somerville/Medford tips" | https://www.reddit.com/r/Tufts/search/?q=off+campus+housing |
+| 11 | r/Emerson | Thread: "Living off campus near Emerson — Downtown Boston tips" | https://www.reddit.com/r/Emerson/search/?q=off+campus+housing |
+| 12 | Anonymous tenant reviews — Doorsteps/Zumper | Review aggregator pages for specific Boston student-heavy complexes (e.g. Fenway area, Mission Hill) | https://www.zumper.com/apartments-for-rent/boston-ma (filter by neighborhood, read reviews) |
 
 ---
 
