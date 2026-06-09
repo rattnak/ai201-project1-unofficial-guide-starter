@@ -87,6 +87,135 @@ Retrieved chunks are formatted as labeled blocks (`[Document: filename]`) in the
 
 ---
 
+## Sample Chunks
+
+Five representative chunks produced by the ingestion pipeline, each with its source document:
+
+**Chunk 1** — `neu_housing_reddit.txt`
+> "The biggest thing nobody tells you: Boston leases almost always start September 1st. If you need housing for a January or May co-op start, you'll either sublease or pay rent on an empty room for months. Start looking WAY earlier than you think — like 4-5 months out."
+
+**Chunk 2** — `allston_landlord_reviews.txt`
+> "RIOS was the worst landlord I've ever had. The heat went out twice during winter. The first time was 10 days with no heat in February — they said the boiler needed a part and there were supply chain delays. We had to buy space heaters. They did not compensate us for the extra electric bill or reduce rent."
+
+**Chunk 3** — `boston_lease_guide.txt`
+> "Many Boston apartments do NOT include heat. This is crucial to understand: Gas heat: You pay the gas bill directly. In an old, poorly-insulated triple-decker, this can be $150-400/month in winter. Electric baseboard heat: The most expensive option. Can be $300-500/month in a poorly-insulated apartment."
+
+**Chunk 4** — `tufts_housing_reddit.txt`
+> "Davis Square in Somerville is the gold standard for Tufts students. You're right on the Red Line, there are tons of restaurants and bars, and it has a great neighborhood feel. The downside: it's gotten expensive. A room in a 3-bed near Davis runs $1,350-1,500/month now."
+
+**Chunk 5** — `mission_hill_safety_reviews.txt`
+> "I've lived in Mission Hill for 3 years now and my honest take: it depends entirely on which part and what time. The area immediately around Huntington Ave — especially the blocks between NEU's campus and Brigham and Women's Hospital — is totally fine. Lots of students, hospital workers, foot traffic at all hours."
+
+---
+
+## Retrieval Test Results
+
+**Query 1: "What do students say about landlords in Allston?"**
+
+Top returned chunks:
+- `allston_landlord_reviews.txt` (distance: 0.18) — RIOS heat outage and security deposit dispute
+- `allston_landlord_reviews.txt` (distance: 0.21) — Charlesgate mold response time
+- `bu_housing_reddit.txt` (distance: 0.29) — warning about Charlesgate, advice to talk to current tenants
+- `allston_landlord_reviews.txt` (distance: 0.31) — positive review of owner-occupied building on Pratt Street
+
+*Why relevant:* All top chunks are directly about landlord experiences in Allston — specific company names, specific problems (mice, mold, heat, deposits). Distance scores below 0.35 indicate strong semantic matches.
+
+---
+
+**Query 2: "What lease red flags should Boston students watch out for?"**
+
+Top returned chunks:
+- `neu_housing_megathread.txt` (distance: 0.17) — lease red flags list (no move-in inspection, utilities not specified, no subletting clause)
+- `boston_lease_guide.txt` (distance: 0.19) — red flags list (cash only, verbal lease, security deposit over 1 month)
+- `boston_general_housing_reddit.txt` (distance: 0.28) — broker fee explanation and September 1st lease tips
+- `neu_housing_reddit.txt` (distance: 0.33) — advice to read lease, check sublease policy
+
+*Why relevant:* The top two chunks are purpose-built lists of lease red flags from two different sources, giving the model multiple perspectives. The lower-ranked chunks add context on broker fees and the September 1st problem, which are Boston-specific lease issues.
+
+---
+
+**Query 3: "Is Mission Hill safe for college students at night?"**
+
+Top returned chunks:
+- `mission_hill_safety_reviews.txt` (distance: 0.14) — 3-year resident breakdown by area and time of day
+- `mission_hill_safety_reviews.txt` (distance: 0.22) — crime statistics comparison vs. Back Bay/Fenway
+- `neu_housing_reddit.txt` (distance: 0.38) — general note about Mission Hill being fine near Huntington Ave
+- `neu_housing_megathread.txt` (distance: 0.41) — neighborhood safety note in the Mission Hill entry
+
+*Why relevant:* The top two chunks are from the dedicated safety document with the most specific information. Distance scores are low, indicating the query is well-matched to the document content.
+
+---
+
+## Example Responses
+
+**Example 1 — grounded response with citations**
+
+*Query:* "What do students say about landlords in Allston?"
+
+*Response:*
+> Students have mixed reviews about landlords in Allston. One reviewer had a very positive experience with a private landlord who owns the building himself, citing prompt responses to maintenance issues and fair rent increases [source: allston_landlord_reviews.txt]. However, another student warned about Charlesgate Realty, which had mixed reviews and was slow to address a mold problem [source: bu_housing_reddit.txt]. A former tenant described RIOS Management as the worst landlord they'd had — the heat went out twice during winter, and when they moved out RIOS kept the entire security deposit without justification, requiring a small claims court filing to recover it [source: allston_landlord_reviews.txt]. Students are advised to ask current tenants about pest issues before signing, as older Allston buildings may have problems with mice [source: bu_housing_reddit.txt].
+
+*Retrieved from:* allston_landlord_reviews.txt, bu_housing_reddit.txt, harvard_housing_reddit.txt, boston_general_housing_reddit.txt
+
+---
+
+**Example 2 — grounded response with citations**
+
+*Query:* "What lease red flags should Boston students watch out for?"
+
+*Response:*
+> Boston students should watch out for several lease red flags. These include: no written move-in inspection form [source: neu_housing_megathread.txt], heat and utilities not specified in the lease [source: neu_housing_megathread.txt], a "no subletting" clause which is a dealbreaker for co-op students [source: neu_housing_megathread.txt], and vague damage clauses [source: neu_housing_megathread.txt]. Additionally, students should be cautious of leases with no written promises, no lease at all (month-to-month verbal arrangements are extremely risky), security deposits over 1 month's rent (illegal in Massachusetts), and landlords who ask for cash only [source: boston_lease_guide.txt]. It's also important to insist on a written move-in inspection or photograph everything with timestamped photos [source: boston_lease_guide.txt].
+
+*Retrieved from:* neu_housing_reddit.txt, boston_lease_guide.txt, boston_general_housing_reddit.txt, neu_housing_megathread.txt
+
+---
+
+**Example 3 — out-of-scope refusal**
+
+*Query:* "What are the best restaurants near Harvard Medical School?"
+
+*Response:*
+> I don't have enough information in my sources to answer that question.
+
+*Why:* The corpus contains no restaurant reviews or HMS-specific content. The system correctly declined rather than generating a plausible-sounding answer from general knowledge.
+
+---
+
+## Query Interface
+
+The interface is a Gradio web app launched with `python app.py`, accessible at `http://localhost:7860`.
+
+**Input fields:**
+- *Your question* — a free-text box where the user types any plain-language question about Boston student housing. Pressing Enter or clicking "Ask" submits it.
+
+**Output fields:**
+- *Answer* — the LLM-generated response, grounded in retrieved documents with inline `[source: filename]` citations
+- *Retrieved from* — a list of the source documents whose chunks were used to construct the answer
+
+**Sample interaction transcript:**
+
+```
+Input:  Which neighborhoods near Northeastern have the cheapest rent?
+
+Answer: According to the NEU housing megathread, the cheapest neighborhoods
+        near Northeastern are Roxbury Crossing ($950-1,150/month per person)
+        and parts of Jamaica Plain ($1,050-1,300/month per person)
+        [source: neu_housing_megathread.txt]. Mission Hill is the next tier
+        at $1,100-1,300/month, followed by Fenway at $1,400-1,800/month
+        [source: neu_housing_megathread.txt]. One student noted that Roxbury
+        Crossing is only 2 Orange Line stops from campus, making it a good
+        value option despite being farther from campus than Mission Hill
+        [source: neu_housing_reddit.txt].
+
+Retrieved from:
+• neu_housing_megathread.txt
+• neu_housing_reddit.txt
+• boston_lease_guide.txt
+• boston_general_housing_reddit.txt
+```
+
+---
+
 ## Evaluation Report
 
 | # | Question | Expected answer | System response (summarized) | Retrieval quality | Response accuracy |
