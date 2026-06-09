@@ -243,6 +243,22 @@ Retrieved from:
 
 ---
 
+**Question that failed:** "What is the average security deposit amount in Boston?"
+
+**What the system returned:**
+
+> The average security deposit in Boston is up to 1 month's rent, as stated by Massachusetts law [source: boston_lease_guide.txt]. For example, for a $1,200/month apartment, the security deposit would be up to $1,200 [source: boston_lease_guide.txt].
+
+*Retrieved from:* boston_lease_guide.txt, cambridge_somerville_reviews.txt, neu_housing_megathread.txt, emerson_housing_reddit.txt
+
+**Why this is a partial failure:** The answer is technically correct but incomplete — it only cites one source inline (`boston_lease_guide.txt`) while the "Retrieved from" panel lists four sources. The three additional chunks (cambridge_somerville_reviews.txt, neu_housing_megathread.txt, emerson_housing_reddit.txt) were retrieved as relevant context but contributed nothing to the final answer, and no inline citation was generated for them. A better response would have surfaced any corroborating details from those chunks (e.g., student-reported deposit disputes or advice from the NEU megathread) or, if those chunks were truly off-topic, they should not have been in the top-4 retrieved results.
+
+**Root cause (tied to a specific pipeline stage):** This is a **generation + retrieval mismatch**. The retriever correctly found the authoritative chunk in `boston_lease_guide.txt` but also pulled in three loosely related chunks that mention deposits only in passing (e.g., a review mentioning a landlord kept a deposit, or a thread comment about first/last/security). The LLM correctly ignored the off-topic chunks rather than hallucinating, but the result is that cited sources in the answer (1) don't match the full retrieved set (4) — creating a transparency gap for the user.
+
+**What you would change to fix it:** Two improvements would address this. First, **raising the similarity threshold** for retrieval (or reducing `k` from 4 to 3) would avoid pulling in weakly-related chunks that don't actually contribute. Second, updating the system prompt to instruct the model to either cite every retrieved document or explicitly note "the other retrieved documents did not contain additional relevant information" would make the gap visible to the user rather than silently dropping sources.
+
+---
+
 ## Spec Reflection
 
 **One way the spec helped you during implementation:** The chunking strategy section of planning.md specified 1,200-character chunks with 200-character overlap before a single line of code was written. This made the `ingest.py` implementation straightforward — the parameters were already decided and justified, so there was no temptation to just use a default value. More importantly, the reasoning in the spec (short review text warrants smaller chunks to avoid blending reviewers' opinions) gave a clear criterion for evaluating whether the chunks looked right at the inspection step.
